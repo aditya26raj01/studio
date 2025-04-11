@@ -7,6 +7,7 @@ import { getAuth } from "firebase/auth";
 const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
 if (!apiKey) {
+  console.error("Firebase API key is not defined in the environment variables.");
   throw new Error("Firebase API key is not defined in the environment variables.");
 }
 
@@ -21,3 +22,4 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
