@@ -87,3 +87,35 @@ body {
   }
 }
 
+/* Styles for Auth Components */
+.auth-container {
+  @apply flex flex-col items-center justify-center min-h-screen py-2;
+}
+
+.auth-card {
+  @apply w-full max-w-md p-8 rounded-lg shadow-md bg-card;
+}
+
+.auth-title {
+  @apply text-2xl font-semibold text-center mb-4 text-foreground;
+}
+
+.auth-input {
+  @apply shadow appearance-none border rounded w-full py-2 px-3 text-foreground leading-tight focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-input;
+}
+
+.auth-button {
+  @apply bg-primary hover:bg-primary/80 text-primary-foreground font-bold py-2 px-4 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+}
+
+.auth-link {
+  @apply inline-block align-baseline font-bold text-sm text-accent hover:text-accent-foreground;
+}
+
+/* Override toast styles to ensure they appear above other content */
+.toaster-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000; /* Ensure it's above everything else */
+}
