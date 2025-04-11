@@ -19,11 +19,14 @@ export async function uploadFile(file: File, userId: string): Promise<string> {
     Key: fileName,
     Body: file,
     ContentType: file.type,
+    ACL: 'public-read', // Make the uploaded file publicly readable
   };
 
   try {
     await s3.upload(params).promise();
-    return `https://${bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${fileName}`;
+    // Construct the correct S3 URL
+    const fileUrl = `https://${bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${fileName}`;
+    return fileUrl;
   } catch (error) {
     console.error('Error uploading to S3:', error);
     throw error;
@@ -53,3 +56,6 @@ export async function listFiles(userId: string): Promise<string[]> {
       throw error;
     }
   }
+  
+
+    
