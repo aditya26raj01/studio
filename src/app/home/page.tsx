@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { useAuth } from "@/components/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogHeader, DialogFooter } from "@/components/ui/dialog";
@@ -10,6 +9,7 @@ import { ImagePlus, Loader2 } from "lucide-react";
 import Image from 'next/image';
 import { useToast } from "@/hooks/use-toast";
 import { Icons } from "@/components/icons";
+import { uploadFile, listFiles } from "@/lib/s3";
 
 const imageSize = 300;
 
@@ -28,11 +28,8 @@ export default function HomePage() {
   }, [user]);
 
   const listImages = async () => {
-    const storage = getStorage();
-    const imagesListRef = ref(storage, `images/${user?.uid}`);
     try {
-      const result = await listAll(imagesListRef);
-      const urls = await Promise.all(result.items.map((itemRef) => getDownloadURL(itemRef)));
+      const urls = await listFiles(user?.uid || '');
       setImages(urls);
     } catch (error) {
       console.error("Error listing images:", error);
@@ -52,13 +49,15 @@ export default function HomePage() {
 
   const uploadFiles = async () => {
     setUploading(true);
-    const storage = getStorage();
 
     try {
       await Promise.all(
         files.map(async (file) => {
-          const storageRef = ref(storage, `images/${user?.uid}/${file.name}`);
-          await uploadBytes(storageRef, file);
+          if (user?.uid) {
+            await uploadFile(file, user.uid);
+          } else {
+            throw new Error("User not authenticated");
+          }
         })
       );
 
