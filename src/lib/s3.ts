@@ -34,28 +34,25 @@ export async function uploadFile(file: File, userId: string): Promise<string> {
 }
 
 export async function listFiles(userId: string): Promise<string[]> {
-    const bucketName = process.env.AWS_S3_BUCKET_NAME;
-    if (!bucketName) {
-      throw new Error('AWS_S3_BUCKET_NAME is not defined');
-    }
-  
-    const prefix = `images/${userId}/`;
-    const params = {
-      Bucket: bucketName,
-      Prefix: prefix,
-    };
-  
-    try {
-      const data = await s3.listObjectsV2(params).promise();
-      if (data.Contents) {
-        return data.Contents.map(item => `https://${bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${item.Key}`);
-      }
-      return [];
-    } catch (error) {
-      console.error('Error listing files from S3:', error);
-      throw error;
-    }
+  const bucketName = process.env.AWS_S3_BUCKET_NAME;
+  if (!bucketName) {
+    throw new Error('AWS_S3_BUCKET_NAME is not defined');
   }
-  
 
-    
+  const prefix = `images/${userId}/`;
+  const params = {
+    Bucket: bucketName,
+    Prefix: prefix,
+  };
+
+  try {
+    const data = await s3.listObjectsV2(params).promise();
+    if (data.Contents) {
+      return data.Contents.map(item => `https://${bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${item.Key}`);
+    }
+    return [];
+  } catch (error) {
+    console.error('Error listing files from S3:', error);
+    throw error;
+  }
+}
